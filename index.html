@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saliha Naz Özmen | Python & Otomasyon Geliştirici</title>
+  <meta name="description" content="Python, FastAPI, Selenium ve Playwright ile veri kazıma, iş akışı otomasyonu ve backend sistemleri geliştiren yazılımcı — Saliha Naz Özmen." />
+  <meta name="author" content="Saliha Naz Özmen" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Inter', system-ui, sans-serif; scroll-behavior: smooth; }
+    body { background: #020617; color: #cbd5e1; min-height: 100vh; }
+
+    /* ── Scrollbar ─────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(#6366f1, #8b5cf6); border-radius: 4px; }
+
+    /* ── Gradient text ──────────────── */
+    .grad { background: linear-gradient(135deg,#818cf8,#6366f1 45%,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    /* ── Glass ──────────────────────── */
+    .glass { background:rgba(15,23,42,.75); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+
+    /* ── Glow orb ───────────────────── */
+    .orb { position:absolute; border-radius:9999px; filter:blur(70px); pointer-events:none; }
+
+    /* ── Progress bar ───────────────── */
+    #progress-bar {
+      position:fixed; top:0; left:0; z-index:9999;
+      height:3px; width:0%;
+      background:linear-gradient(90deg,#6366f1,#a78bfa);
+      transition:width .1s linear;
+    }
+
+    /* ── Navbar ─────────────────────── */
+    #navbar {
+      position:fixed; top:12px; left:50%; transform:translateX(-50%);
+      z-index:900; width:93%; max-width:1024px;
+      border-radius:18px;
+      border:1px solid rgba(99,102,241,.2);
+      padding:10px 20px;
+      background:rgba(2,6,23,.8);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+
+    /* ── Nav link underline ──────────── */
+    .nav-link { position:relative; color:#94a3b8; font-size:.875rem; font-weight:500; text-decoration:none; transition:color .25s; }
+    .nav-link::after { content:''; position:absolute; left:0; bottom:-3px; height:2px; width:0; border-radius:2px; background:linear-gradient(90deg,#6366f1,#a78bfa); transition:width .28s ease; }
+    .nav-link:hover { color:#e2e8f0; }
+    .nav-link:hover::after { width:100%; }
+
+    /* ── Buttons ────────────────────── */
+    .btn-p {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:11px 24px; border-radius:13px; border:none;
+      font-weight:600; font-size:.875rem; color:#fff; cursor:pointer; text-decoration:none;
+      background:linear-gradient(135deg,#4f46e5,#7c3aed);
+      box-shadow:0 0 20px rgba(99,102,241,.38);
+      transition:all .3s ease;
+    }
+    .btn-p:hover { box-shadow:0 0 36px rgba(99,102,241,.7); transform:translateY(-2px); }
+
+    .btn-o {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 22px; border-radius:13px;
+      border:1px solid rgba(99,102,241,.45);
+      font-weight:600; font-size:.875rem; color:#cbd5e1; cursor:pointer; text-decoration:none;
+      background:transparent; transition:all .3s ease;
+    }
+    .btn-o:hover { border-color:#818cf8; background:rgba(99,102,241,.1); color:#e2e8f0; transform:translateY(-2px); }
+
+    .btn-icon {
+      width:36px; height:36px; border-radius:10px;
+      display:inline-flex; align-items:center; justify-content:center;
+      border:1px solid rgba(99,102,241,.3); color:#94a3b8; text-decoration:none;
+      transition:all .25s;
+    }
+    .btn-icon:hover { border-color:#818cf8; color:#818cf8; background:rgba(99,102,241,.1); transform:translateY(-2px); }
+
+    /* ── Mobile menu ─────────────────── */
+    #mob-menu { max-height:0; overflow:hidden; opacity:0; transition:max-height .38s ease, opacity .38s ease; }
+    #mob-menu.open { max-height:400px; opacity:1; }
+
+    /* ── Hero section ───────────────── */
+    .hero-bg { background: linear-gradient(160deg,#020617 0%,#0f172a 55%,#1e1b4b 100%); }
+    .dot-grid { background-image:radial-gradient(circle,rgba(99,102,241,.18) 1px,transparent 1px); background-size:30px 30px; }
+
+    /* ── Float animation ────────────── */
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .float     { animation:float 5s ease-in-out infinite; }
+    .float-alt { animation:float 7s ease-in-out infinite reverse; }
+
+    /* ── Blink cursor ───────────────── */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    #cursor { animation:blink 1s step-end infinite; }
+
+    /* ── Pulse ──────────────────────── */
+    @keyframes dot-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.6)} 50%{box-shadow:0 0 0 6px rgba(52,211,153,0)} }
+    .dot-pulse { animation:dot-pulse 2s ease-in-out infinite; }
+
+    /* ── Skill badge ────────────────── */
+    .badge {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:8px 14px; border-radius:12px;
+      background:rgba(30,27,75,.65); border:1px solid rgba(99,102,241,.25);
+      font-size:.8125rem; font-weight:600; color:#c7d2fe;
+      transition:all .22s ease; cursor:default; user-select:none;
+    }
+    .badge:hover { background:rgba(99,102,241,.22); border-color:rgba(99,102,241,.6); transform:translateY(-2px); color:#e0e7ff; }
+
+    /* ── Project card ───────────────── */
+    .card {
+      background:rgba(15,23,42,.9); border:1px solid rgba(51,65,85,.7);
+      border-radius:18px; overflow:hidden; display:flex; flex-direction:column;
+      transition:all .32s ease;
+    }
+    .card:hover { border-color:rgba(99,102,241,.5); transform:translateY(-6px); box-shadow:0 24px 48px rgba(0,0,0,.45); }
+
+    /* ── Reveal on scroll ───────────── */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity:1; transform:none; }
+
+    /* ── Section label ──────────────── */
+    .slabel { display:block; font-size:.7rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#818cf8; margin-bottom:8px; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- ════════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<nav id="navbar">
+  <div class="flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-2.5 group" style="text-decoration:none;">
+      <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#fff;transition:transform .2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">SN</div>
+      <span style="font-weight:700;font-size:.875rem;color:#fff;">saliha<span style="color:#818cf8;">.dev</span></span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-7">
+      <a href="#about"    class="nav-link">Hakkımda</a>
+      <a href="#skills"   class="nav-link">Yetenekler</a>
+      <a href="#projects" class="nav-link">Projeler</a>
+      <a href="#contact"  class="nav-link">İletişim</a>
+    </div>
+
+    <!-- Social + CTA -->
+    <div class="hidden md:flex items-center gap-3">
+      <a href="https://github.com/nazzozmen" target="_blank" rel="noopener noreferrer" class="btn-icon" aria-label="GitHub">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/saliha-naz-%C3%B6zmen-5184b5372/" target="_blank" rel="noopener noreferrer" class="btn-icon" aria-label="LinkedIn">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="#contact" class="btn-p" style="padding:8px 18px;border-radius:11px;font-size:.8rem;">İletişime Geç</a>
+    </div>
+
+    <!-- Hamburger -->
+    <button id="ham-btn" aria-label="Menü" style="display:none;flex-direction:column;gap:5px;width:36px;height:36px;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;border-radius:10px;" class="md:hidden" onclick="toggleMenu()">
+      <span id="h1" style="width:20px;height:2px;background:#cbd5e1;border-radius:2px;transition:all .3s;display:block;"></span>
+      <span id="h2" style="width:20px;height:2px;background:#cbd5e1;border-radius:2px;transition:all .3s;display:block;"></span>
+      <span id="h3" style="width:20px;height:2px;background:#cbd5e1;border-radius:2px;transition:all .3s;display:block;"></span>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mob-menu">
+    <div style="border-top:1px solid rgba(51,65,85,.7);margin-top:10px;padding-top:8px;padding-bottom:6px;display:flex;flex-direction:column;gap:4px;">
+      <a href="#about"    style="color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(30,41,59,.6)';this.style.color='#e2e8f0'" onmouseout="this.style.background='';this.style.color='#94a3b8'" onclick="closeMenu()">Hakkımda</a>
+      <a href="#skills"   style="color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(30,41,59,.6)';this.style.color='#e2e8f0'" onmouseout="this.style.background='';this.style.color='#94a3b8'" onclick="closeMenu()">Yetenekler</a>
+      <a href="#projects" style="color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(30,41,59,.6)';this.style.color='#e2e8f0'" onmouseout="this.style.background='';this.style.color='#94a3b8'" onclick="closeMenu()">Projeler</a>
+      <a href="#contact"  style="color:#94a3b8;padding:10px 12px;border-radius:10px;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(30,41,59,.6)';this.style.color='#e2e8f0'" onmouseout="this.style.background='';this.style.color='#94a3b8'" onclick="closeMenu()">İletişim</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section id="hero" class="hero-bg" style="min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;">
+  <!-- Orbs -->
+  <div class="orb" style="width:480px;height:480px;background:rgba(99,102,241,.14);top:-80px;left:-120px;"></div>
+  <div class="orb" style="width:340px;height:340px;background:rgba(124,58,237,.12);bottom:-40px;right:-80px;"></div>
+  <!-- Dot grid -->
+  <div class="dot-grid" style="position:absolute;inset:0;pointer-events:none;"></div>
+
+  <div style="position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:140px 24px 100px;display:flex;align-items:center;justify-content:space-between;gap:48px;flex-wrap:wrap;">
+    <div style="max-width:580px;flex:1 1 340px;">
+
+      <!-- H1 -->
+      <h1 style="font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.1;color:#f8fafc;margin-bottom:18px;">
+        Merhaba, Ben<br>
+        <span class="grad">Saliha Naz Özmen</span> 👋
+      </h1>
+
+      <!-- Typed -->
+      <p style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;color:#a5b4fc;margin-bottom:20px;min-height:34px;">
+        <span id="typed"></span><span id="cursor" style="color:#818cf8;font-weight:300;">|</span>
+      </p>
+
+      <!-- Description -->
+      <p style="color:#94a3b8;font-size:1rem;line-height:1.75;max-width:600px;margin-bottom:36px;">
+        Veri kazıma (web scraping), iş akışı otomasyonları ve modern backend mimarileri geliştiren yazılımcı. Tekrar eden süreçleri akıllı araçlara dönüştürerek verimliliği artırıyorum.
+      </p>
+
+      <!-- CTA -->
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:56px;">
+        <a href="#projects" class="btn-p">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0l-7 7m7-7l-7-7"/></svg>
+          Projelerimi İncele
+        </a>
+        <a href="#contact" class="btn-o">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          İletişime Geç
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:center;">
+        <div>
+          <div style="font-size:2rem;font-weight:900;color:#fff;">4+</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#64748b;margin-top:2px;">Tamamlanan Proje</div>
+        </div>
+        <div style="width:1px;background:#1e293b;height:36px;"></div>
+        <div>
+          <div style="font-size:2rem;font-weight:900;color:#fff;">2+</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#64748b;margin-top:2px;">Yıl Deneyim</div>
+        </div>
+        <div style="width:1px;background:#1e293b;height:36px;"></div>
+        <div>
+          <div style="font-size:2rem;font-weight:900;color:#fff;">8+</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#64748b;margin-top:2px;">Teknoloji</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Profile Photo -->
+    <div class="float" style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;">
+      <div style="position:relative;width:300px;height:300px;">
+        <!-- Gradient ring -->
+        <div style="position:absolute;inset:-4px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a78bfa,#818cf8);padding:4px;"></div>
+        <!-- Glow -->
+        <div style="position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.25) 0%,transparent 70%);"></div>
+        <!-- Photo -->
+        <img
+          src="naz.jpeg"
+          alt="Saliha Naz Özmen"
+          style="position:relative;z-index:1;width:300px;height:300px;border-radius:50%;object-fit:cover;object-position:center top;border:4px solid #020617;"
+        />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scroll hint -->
+  <a href="#about" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;color:#475569;font-size:.75rem;text-decoration:none;animation:float 2.5s ease-in-out infinite;">
+    <span>Keşfet</span>
+    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </a>
+</section>
+
+<!-- ════════════════════════════════
+     ABOUT
+════════════════════════════════ -->
+<section id="about" style="padding:96px 0;background:#020617;">
+  <div style="max-width:1024px;margin:0 auto;padding:0 24px;">
+    <div class="reveal" style="display:grid;grid-template-columns:1fr;gap:48px;align-items:center;">
+
+      <div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;">
+        <!-- Text -->
+        <div>
+          <span class="slabel">Hakkımda</span>
+          <h2 style="font-size:2rem;font-weight:900;color:#f8fafc;margin-bottom:20px;line-height:1.2;">
+            Kodu <span class="grad">Anlama</span> Tutkusu
+          </h2>
+          <div style="display:flex;flex-direction:column;gap:14px;color:#94a3b8;font-size:.9375rem;line-height:1.75;">
+            <p>Yazılım geliştirmeye olan tutkum, problemleri çözme isteğimden besleniyor. Her projeyi kullanıcı ihtiyaçlarını en iyi anlayan, en temiz ve sürdürülebilir çözümü üreten bir fırsat olarak görüyorum.</p>
+            <p>Python ekosisteminde web scraping, otomasyon ve backend API geliştirme alanlarında deneyim sahibiyim. Yazdığım araçlar ölçeklenebilir, test edilebilir ve bakımı kolay olacak şekilde tasarlanıyor.</p>
+            <p>"İyi kod" yazmanın ötesinde, çözümlerimin gerçek iş değeri yaratmasına önem veriyorum.</p>
+          </div>
+
+          <!-- Fact cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px;">
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;transition:border-color .25s;" onmouseover="this.style.borderColor='rgba(99,102,241,.4)'" onmouseout="this.style.borderColor='#1e293b'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">🐍</div>
+              <div style="color:#fff;font-weight:600;font-size:.875rem;">Python Uzmanı</div>
+              <div style="color:#64748b;font-size:.75rem;margin-top:2px;">2+ yıl tecrübe</div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;transition:border-color .25s;" onmouseover="this.style.borderColor='rgba(99,102,241,.4)'" onmouseout="this.style.borderColor='#1e293b'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">🤖</div>
+              <div style="color:#fff;font-weight:600;font-size:.875rem;">Otomasyon</div>
+              <div style="color:#64748b;font-size:.75rem;margin-top:2px;">Selenium · Playwright</div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;transition:border-color .25s;" onmouseover="this.style.borderColor='rgba(99,102,241,.4)'" onmouseout="this.style.borderColor='#1e293b'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">⚡</div>
+              <div style="color:#fff;font-weight:600;font-size:.875rem;">API Geliştirme</div>
+              <div style="color:#64748b;font-size:.75rem;margin-top:2px;">FastAPI · REST</div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:16px;transition:border-color .25s;" onmouseover="this.style.borderColor='rgba(99,102,241,.4)'" onmouseout="this.style.borderColor='#1e293b'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">📊</div>
+              <div style="color:#fff;font-weight:600;font-size:.875rem;">Veri Analizi</div>
+              <div style="color:#64748b;font-size:.75rem;margin-top:2px;">Pandas · SQLAlchemy</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code visual -->
+        <div style="display:flex;justify-content:center;">
+          <div style="position:relative;">
+            <div style="position:absolute;inset:0;border-radius:24px;background:rgba(99,102,241,.12);filter:blur(40px);transform:scale(1.1);pointer-events:none;"></div>
+            <div style="position:relative;width:300px;border-radius:20px;border:1px solid rgba(99,102,241,.2);background:rgba(15,23,42,.85);backdrop-filter:blur(12px);padding:20px;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;box-shadow:0 24px 64px rgba(0,0,0,.4);">
+              <!-- Window chrome -->
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#ef4444;opacity:.7;"></div>
+                <div style="width:12px;height:12px;border-radius:50%;background:#f59e0b;opacity:.7;"></div>
+                <div style="width:12px;height:12px;border-radius:50%;background:#22c55e;opacity:.7;"></div>
+                <span style="margin-left:8px;color:#475569;font-size:.65rem;">about_me.py</span>
+              </div>
+              <div style="color:#64748b;"># Saliha Naz Özmen</div>
+              <div><span style="color:#a78bfa;">class</span> <span style="color:#fde68a;">Developer</span><span style="color:#cbd5e1;">:</span></div>
+              <div style="margin-left:16px;"><span style="color:#a78bfa;">def</span> <span style="color:#60a5fa;">__init__</span><span style="color:#cbd5e1;">(self):</span></div>
+              <div style="margin-left:32px;"><span style="color:#94a3b8;">self.</span><span style="color:#34d399;">isim</span> <span style="color:#cbd5e1;">= </span><span style="color:#fb923c;">"Saliha Naz"</span></div>
+              <div style="margin-left:32px;"><span style="color:#94a3b8;">self.</span><span style="color:#34d399;">sehir</span> <span style="color:#cbd5e1;">= </span><span style="color:#fb923c;">"Türkiye"</span></div>
+              <div style="margin-left:32px;"><span style="color:#94a3b8;">self.</span><span style="color:#34d399;">odak</span> <span style="color:#cbd5e1;">= [</span></div>
+              <div style="margin-left:48px;"><span style="color:#fb923c;">"Otomasyon"</span><span style="color:#cbd5e1;">,</span></div>
+              <div style="margin-left:48px;"><span style="color:#fb923c;">"Web Scraping"</span><span style="color:#cbd5e1;">,</span></div>
+              <div style="margin-left:48px;"><span style="color:#fb923c;">"Backend API"</span></div>
+              <div style="margin-left:32px;"><span style="color:#cbd5e1;">]</span></div>
+              <div style="margin-left:16px;"><span style="color:#a78bfa;">def</span> <span style="color:#60a5fa;">coz</span><span style="color:#cbd5e1;">(self, p):</span></div>
+              <div style="margin-left:32px;"><span style="color:#a78bfa;">return</span> <span style="color:#34d399;">solution</span> <span style="color:#475569;"># ✅</span></div>
+            </div>
+            <!-- Floating pills -->
+            <div class="float" style="position:absolute;top:-14px;right:-14px;background:#4f46e5;color:#fff;font-size:.7rem;font-weight:700;padding:6px 12px;border-radius:9999px;box-shadow:0 4px 16px rgba(99,102,241,.5);">Python 🐍</div>
+            <div class="float-alt" style="position:absolute;bottom:-14px;left:-14px;background:#7c3aed;color:#fff;font-size:.7rem;font-weight:700;padding:6px 12px;border-radius:9999px;box-shadow:0 4px 16px rgba(124,58,237,.5);">FastAPI ⚡</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SKILLS
+════════════════════════════════ -->
+<section id="skills" style="padding:96px 0;background:#0a1020;">
+  <div style="max-width:1024px;margin:0 auto;padding:0 24px;">
+
+    <div class="reveal" style="text-align:center;margin-bottom:56px;">
+      <span class="slabel" style="display:block;text-align:center;">Yetenekler</span>
+      <h2 style="font-size:2rem;font-weight:900;color:#f8fafc;margin-bottom:12px;">Teknoloji <span class="grad">Yığını</span></h2>
+      <p style="color:#94a3b8;max-width:480px;margin:0 auto;font-size:.9375rem;">Projelerimde aktif kullandığım ve üretim ortamında kanıtlanmış teknolojiler.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:36px;" id="skill-container"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PROJECTS
+════════════════════════════════ -->
+<section id="projects" style="padding:96px 0;background:#020617;">
+  <div style="max-width:1152px;margin:0 auto;padding:0 24px;">
+
+    <div class="reveal" style="text-align:center;margin-bottom:56px;">
+      <span class="slabel" style="display:block;text-align:center;">Projeler</span>
+      <h2 style="font-size:2rem;font-weight:900;color:#f8fafc;margin-bottom:12px;">Öne Çıkan <span class="grad">Çalışmalarım</span></h2>
+      <p style="color:#94a3b8;max-width:520px;margin:0 auto;font-size:.9375rem;">Gerçek iş problemlerine ürettiğim, ölçeklenebilir ve bakımı kolay çözümler.</p>
+    </div>
+
+    <div id="proj-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CONTACT
+════════════════════════════════ -->
+<section id="contact" style="padding:96px 0;background:#0a1020;">
+  <div style="max-width:720px;margin:0 auto;padding:0 24px;">
+    <div class="reveal">
+      <div style="position:relative;border-radius:24px;border:1px solid rgba(99,102,241,.22);background:rgba(15,23,42,.8);backdrop-filter:blur(14px);padding:56px 40px;text-align:center;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5);">
+        <!-- Top line -->
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);"></div>
+        <!-- Glow -->
+        <div class="orb" style="width:300px;height:300px;background:rgba(99,102,241,.08);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+        <div style="position:relative;z-index:2;">
+          <div style="width:64px;height:64px;margin:0 auto 20px;border-radius:18px;background:rgba(30,27,75,.8);border:1px solid rgba(99,102,241,.3);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">✉️</div>
+          <span class="slabel" style="display:block;text-align:center;">İletişim</span>
+          <h2 style="font-size:2rem;font-weight:900;color:#f8fafc;margin-bottom:14px;">Birlikte <span class="grad">Çalışalım</span></h2>
+          <p style="color:#94a3b8;margin-bottom:32px;line-height:1.7;max-width:440px;margin-left:auto;margin-right:auto;">
+            Yeni bir projeniz mi var? Mevcut sisteminizi geliştirmek mi istiyorsunuz? Her türlü iş birliği teklifini değerlendiriyorum.
+          </p>
+
+          <a href="mailto:salihanazozmen16@gmail.com" class="btn-p" style="margin-bottom:28px;justify-content:center;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            salihanazozmen16@gmail.com
+          </a>
+
+          <div style="display:flex;justify-content:center;gap:14px;margin-top:8px;">
+            <a href="https://github.com/nazzozmen" target="_blank" rel="noopener noreferrer" class="btn-o" style="padding:10px 20px;border-radius:11px;font-size:.8rem;">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/saliha-naz-%C3%B6zmen-5184b5372/" target="_blank" rel="noopener noreferrer" class="btn-o" style="padding:10px 20px;border-radius:11px;font-size:.8rem;">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer style="background:#020617;border-top:1px solid #0f172a;padding:28px 0;">
+  <div style="max-width:1024px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;">
+    <a href="#hero" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:#fff;">SN</div>
+      <span style="color:#64748b;font-size:.875rem;">saliha<span style="color:#818cf8;">.dev</span></span>
+    </a>
+    <p style="color:#334155;font-size:.75rem;text-align:center;">
+      © <span id="yr"></span> Saliha Naz Özmen &nbsp;·&nbsp; Python ile üretiliyor 🐍
+    </p>
+    <a href="#hero" aria-label="Başa dön" style="width:32px;height:32px;border-radius:10px;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;color:#475569;text-decoration:none;transition:all .25s;" onmouseover="this.style.borderColor='rgba(99,102,241,.5)';this.style.color='#818cf8';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#1e293b';this.style.color='#475569';this.style.transform='translateY(0)'">
+      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+    </a>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════ -->
+<script>
+/* ── DATA ───────────────────────────────── */
+const skillCats = [
+  {
+    icon:'💻', label:'Diller',
+    items:[{n:'Python',e:'🐍'},{n:'SQL',e:'🗃️'},{n:'JavaScript',e:'⚡'}]
+  },
+  {
+    icon:'🔧', label:'Backend & Kütüphaneler',
+    items:[{n:'FastAPI',e:'🚀'},{n:'Selenium',e:'🤖'},{n:'BeautifulSoup',e:'🍜'},{n:'Playwright',e:'🎭'},{n:'Pandas',e:'🐼'},{n:'SQLAlchemy',e:'🔗'}]
+  },
+  {
+    icon:'⚙️', label:'Veritabanı & Araçlar',
+    items:[{n:'SQLite',e:'💾'},{n:'MySQL',e:'🐬'},{n:'Git',e:'🌿'},{n:'GitHub',e:'🐙'},{n:'Chart.js',e:'📊'},{n:'HTML5/CSS3',e:'🎨'}]
+  }
+];
+
+const projects = [
+  {
+    emoji:'🔍',
+    title:'Çoklu Portal Duyuru & Veri Kazıma Otomasyonu',
+    desc:'Onlarca kamu ve özel portaldaki duyuruları anlık takip eden, değişiklikleri otomatik HTML raporu ve e-posta bildirimiyle ileten tam otomasyon sistemi.',
+    tags:['Python','Selenium','BeautifulSoup','Pandas','SMTP'],
+    accentFrom:'#4f46e5', accentTo:'#6366f1',
+    tagBg:'rgba(49,46,129,.55)', tagColor:'#a5b4fc', tagBorder:'rgba(99,102,241,.35)',
+  },
+  {
+    emoji:'📊',
+    title:'Sosyal Medya Analitik & Dashboard Sistemi',
+    desc:'Playwright ile sosyal medya metriklerini toplayan, FastAPI backend ile sunan ve Chart.js tabanlı interaktif dashboard üzerinde gerçek zamanlı görselleştiren analitik platform.',
+    tags:['FastAPI','Playwright','SQLite','Chart.js','REST API'],
+    accentFrom:'#7c3aed', accentTo:'#8b5cf6',
+    tagBg:'rgba(46,16,101,.55)', tagColor:'#c4b5fd', tagBorder:'rgba(139,92,246,.35)',
+  },
+  {
+    emoji:'📄',
+    title:'Otomatik Belge Üretici & E-Posta Dağıtım Servisi',
+    desc:'Veri tabanı kayıtlarından kişiselleştirilmiş Word/PDF belgeler üreten ve toplu e-posta kampanyası yürüten entegre otomasyon servisi.',
+    tags:['Python','Word/PDF','SMTP','SQLAlchemy','Şablon Motoru'],
+    accentFrom:'#059669', accentTo:'#10b981',
+    tagBg:'rgba(6,78,59,.45)', tagColor:'#6ee7b7', tagBorder:'rgba(16,185,129,.3)',
+  }
+];
+
+/* ── RENDER SKILLS ──────────────────────── */
+const skillContainer = document.getElementById('skill-container');
+skillCats.forEach(cat => {
+  const div = document.createElement('div');
+  div.className = 'reveal';
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="width:32px;height:32px;border-radius:10px;background:#0f172a;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;font-size:.9rem;">${cat.icon}</div>
+      <h3 style="color:#f1f5f9;font-weight:700;font-size:.8125rem;text-transform:uppercase;letter-spacing:.1em;">${cat.label}</h3>
+      <div style="flex:1;height:1px;background:#1e293b;"></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      ${cat.items.map(s => `<div class="badge"><span>${s.e}</span><span>${s.n}</span></div>`).join('')}
+    </div>
+  `;
+  skillContainer.appendChild(div);
+});
+
+/* ── RENDER PROJECTS ────────────────────── */
+const grid = document.getElementById('proj-grid');
+projects.forEach((p, i) => {
+  const d = document.createElement('div');
+  d.className = 'card reveal';
+  d.style.transitionDelay = `${i * 0.1}s`;
+  d.innerHTML = `
+    <div style="height:3px;background:linear-gradient(90deg,${p.accentFrom},${p.accentTo});"></div>
+    <div style="padding:24px;display:flex;flex-direction:column;flex:1;">
+      <div style="width:48px;height:48px;border-radius:14px;background:${p.tagBg};border:1px solid ${p.tagBorder};display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;">${p.emoji}</div>
+      <h3 style="color:#f8fafc;font-weight:700;font-size:.9375rem;line-height:1.4;margin-bottom:10px;">${p.title}</h3>
+      <p style="color:#94a3b8;font-size:.875rem;line-height:1.7;margin-bottom:18px;flex:1;">${p.desc}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
+        ${p.tags.map(t=>`<span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:7px;background:${p.tagBg};color:${p.tagColor};border:1px solid ${p.tagBorder};">${t}</span>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-top:auto;">
+        <a href="https://github.com/nazzozmen" target="_blank" rel="noopener noreferrer" class="btn-o" style="flex:1;justify-content:center;padding:9px 12px;border-radius:11px;font-size:.78rem;">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="#" class="btn-p" style="flex:1;justify-content:center;padding:9px 12px;border-radius:11px;font-size:.78rem;">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          Detay
+        </a>
+      </div>
+    </div>
+  `;
+  grid.appendChild(d);
+});
+
+/* ── REVEAL (Intersection Observer) ────── */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ── TYPING EFFECT ──────────────────────── */
+const phrases = ['Python Geliştirici','Otomasyon Uzmanı','Web Scraping Dev','Backend Developer'];
+let pi=0, ci=0, del=false;
+const typedEl = document.getElementById('typed');
+function tick(){
+  const cur = phrases[pi];
+  typedEl.textContent = del ? cur.slice(0,--ci) : cur.slice(0,++ci);
+  if(!del && ci===cur.length){ del=true; setTimeout(tick,1800); return; }
+  if(del && ci===0){ del=false; pi=(pi+1)%phrases.length; }
+  setTimeout(tick, del?52:88);
+}
+setTimeout(tick, 600);
+
+/* ── MOBILE MENU ────────────────────────── */
+let menuOpen = false;
+const hamBtn = document.getElementById('ham-btn');
+// Make hamburger visible on mobile via JS
+function checkHamVisibility(){
+  hamBtn.style.display = window.innerWidth < 768 ? 'flex' : 'none';
+}
+checkHamVisibility();
+window.addEventListener('resize', checkHamVisibility);
+
+function toggleMenu(){
+  menuOpen = !menuOpen;
+  document.getElementById('mob-menu').classList.toggle('open', menuOpen);
+  const h1=document.getElementById('h1'), h2=document.getElementById('h2'), h3=document.getElementById('h3');
+  h1.style.transform = menuOpen ? 'translateY(7px) rotate(45deg)' : '';
+  h2.style.opacity   = menuOpen ? '0' : '1';
+  h3.style.transform = menuOpen ? 'translateY(-7px) rotate(-45deg)' : '';
+}
+function closeMenu(){
+  menuOpen = false;
+  document.getElementById('mob-menu').classList.remove('open');
+  const h1=document.getElementById('h1'), h2=document.getElementById('h2'), h3=document.getElementById('h3');
+  h1.style.transform=''; h2.style.opacity='1'; h3.style.transform='';
+}
+
+/* ── SCROLL PROGRESS ────────────────────── */
+window.addEventListener('scroll', () => {
+  const top = document.documentElement.scrollTop;
+  const total = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progress-bar').style.width = ((top/total)*100)+'%';
+}, { passive:true });
+
+/* ── FOOTER YEAR ────────────────────────── */
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── RESPONSIVE ABOUT GRID ──────────────── */
+function fixAboutGrid(){
+  const ag = document.querySelector('.about-grid');
+  if(ag) ag.style.gridTemplateColumns = window.innerWidth < 768 ? '1fr' : '1fr 1fr';
+}
+fixAboutGrid();
+window.addEventListener('resize', fixAboutGrid);
+</script>
+</body>
+</html>
