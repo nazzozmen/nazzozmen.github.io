@@ -129,9 +129,77 @@
 
     /* ── Section label ──────────────── */
     .slabel { display:block; font-size:.7rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#818cf8; margin-bottom:8px; }
+
+    /* ── README Modal ───────────────── */
+    #readme-overlay {
+      position:fixed; inset:0; z-index:9000;
+      background:rgba(2,6,23,.85); backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition:opacity .3s ease;
+      padding:20px;
+    }
+    #readme-overlay.open { opacity:1; pointer-events:all; }
+    #readme-box {
+      background:#0f172a;
+      border:1px solid rgba(99,102,241,.35);
+      border-radius:20px;
+      width:100%; max-width:760px;
+      max-height:85vh;
+      display:flex; flex-direction:column;
+      transform:translateY(24px) scale(.97);
+      transition:transform .3s ease;
+      box-shadow:0 0 60px rgba(99,102,241,.18);
+    }
+    #readme-overlay.open #readme-box { transform:translateY(0) scale(1); }
+    #readme-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:20px 24px 16px;
+      border-bottom:1px solid #1e293b;
+      flex-shrink:0;
+    }
+    #readme-title { color:#f8fafc; font-weight:700; font-size:1rem; }
+    #readme-close {
+      width:32px; height:32px; border-radius:9px;
+      background:#1e293b; border:none; cursor:pointer;
+      color:#94a3b8; font-size:1.1rem;
+      display:flex; align-items:center; justify-content:center;
+      transition:all .2s;
+    }
+    #readme-close:hover { background:#334155; color:#f8fafc; }
+    #readme-body {
+      overflow-y:auto; padding:24px;
+      scrollbar-width:thin; scrollbar-color:#334155 transparent;
+    }
+    #readme-body::-webkit-scrollbar { width:5px; }
+    #readme-body::-webkit-scrollbar-thumb { background:#334155; border-radius:4px; }
+    .rm h1 { color:#f8fafc; font-size:1.3rem; font-weight:800; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #1e293b; }
+    .rm h2 { color:#a5b4fc; font-size:.95rem; font-weight:700; margin:20px 0 10px; }
+    .rm h3 { color:#cbd5e1; font-size:.875rem; font-weight:600; margin:14px 0 6px; }
+    .rm p  { color:#94a3b8; font-size:.875rem; line-height:1.75; margin-bottom:10px; }
+    .rm ul { padding-left:20px; margin-bottom:12px; }
+    .rm li { color:#94a3b8; font-size:.875rem; line-height:1.8; }
+    .rm strong { color:#e2e8f0; }
+    .rm code { font-family:'JetBrains Mono',monospace; font-size:.8rem; background:#1e293b; color:#a5b4fc; padding:2px 7px; border-radius:5px; }
+    .rm pre { background:#020617; border:1px solid #1e293b; border-radius:10px; padding:16px; margin:10px 0 14px; overflow-x:auto; }
+    .rm pre code { background:none; padding:0; color:#6ee7b7; font-size:.8rem; }
+    .rm .badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+    .rm .tag { font-size:.7rem; font-weight:600; padding:3px 10px; border-radius:7px; background:rgba(49,46,129,.55); color:#a5b4fc; border:1px solid rgba(99,102,241,.35); }
   </style>
 </head>
 <body>
+
+<!-- ── README MODAL ─────────────────────── -->
+<div id="readme-overlay" onclick="closeReadme(event)">
+  <div id="readme-box">
+    <div id="readme-header">
+      <span id="readme-title">README</span>
+      <button id="readme-close" onclick="closeReadme(null,true)" aria-label="Kapat">✕</button>
+    </div>
+    <div id="readme-body" class="rm"></div>
+  </div>
+</div>
+
 
 <div id="progress-bar"></div>
 
@@ -465,6 +533,58 @@ const projects = [
     tags:['Python','Selenium','BeautifulSoup','Pandas','SMTP'],
     accentFrom:'#4f46e5', accentTo:'#6366f1',
     tagBg:'rgba(49,46,129,.55)', tagColor:'#a5b4fc', tagBorder:'rgba(99,102,241,.35)',
+    readme: `
+      <h1>🔍 Duyuru Takip Otomasyonu</h1>
+      <p>Çeşitli kurum ve kuruluşların web sitelerindeki duyuruları, haberleri ve hibe çağrılarını otomatik olarak takip eden, toplayan ve günlük olarak e-posta ile bildiren bir Python betiğidir. Toplanan tüm veriler Excel dosyasına kaydedilir.</p>
+
+      <h2>🏛️ Takip Edilen Kurumlar</h2>
+      <ul>
+        <li>AHİKA</li>
+        <li>KOSGEB</li>
+        <li>TÜRKPATENT</li>
+        <li>TÜSEB</li>
+        <li>TÜBİTAK</li>
+        <li>Türkiye Ulusal Ajansı</li>
+        <li>AB Projeleri (Uluslararası Hibe Çağrıları)</li>
+        <li>EU Funding (Funding &amp; Tenders Portal)</li>
+      </ul>
+
+      <h2>✨ Özellikler</h2>
+      <ul>
+        <li><strong>Otomatik Tarama:</strong> Belirtilen kurumların web sayfalarını Selenium ve BeautifulSoup kullanarak arka planda tarar.</li>
+        <li><strong>Tarih Filtrelemesi:</strong> Sadece bugüne ait veya son başvuru tarihi geçmemiş güncel duyuruları ayrıştırır.</li>
+        <li><strong>E-posta Bildirimi:</strong> Günlük derlenen duyuruları HTML formatında belirtilen e-posta adreslerine gönderir.</li>
+        <li><strong>Excel Kaydı:</strong> Bulunan tüm duyuruları <code>tum_duyurular.xlsx</code> dosyasına kaydeder.</li>
+      </ul>
+
+      <h2>⚙️ Gereksinimler</h2>
+      <pre><code>pip install pandas beautifulsoup4 selenium</code></pre>
+      <p>Ayrıca güncel bir <strong>Google Chrome</strong> tarayıcısının sisteminizde kurulu olması gerekmektedir.</p>
+
+      <h2>🚀 Kurulum ve Kullanım</h2>
+      <ul>
+        <li>Proje dosyalarını bilgisayarınıza indirin.</li>
+        <li>Gerekli kütüphaneleri yükleyin.</li>
+        <li><code>duyuru_takip.py</code> içindeki e-posta ayarlarını güncelleyin:
+          <ul>
+            <li><code>SENDER_EMAIL</code> — Gönderici e-posta adresi</li>
+            <li><code>SENDER_PASSWORD</code> — Uygulama şifresi</li>
+            <li><code>RECEIVER_EMAIL</code> — Alıcı e-posta adresi</li>
+          </ul>
+        </li>
+      </ul>
+      <pre><code>python duyuru_takip.py</code></pre>
+
+      <h2>⚠️ Önemli Notlar</h2>
+      <ul>
+        <li>Gmail kullanıyorsanız <strong>Uygulama Şifreleri (App Passwords)</strong> oluşturmanız gerekir.</li>
+        <li>Chrome "headless" modda çalıştığı için ekranda tarayıcı penceresi açılmaz.</li>
+      </ul>
+
+      <div class="badge-row">
+        <span class="tag">Python</span><span class="tag">Selenium</span><span class="tag">BeautifulSoup</span><span class="tag">Pandas</span><span class="tag">SMTP</span>
+      </div>
+    `,
   },
   {
     emoji:'📊',
@@ -473,6 +593,50 @@ const projects = [
     tags:['FastAPI','Playwright','SQLite','Chart.js','REST API'],
     accentFrom:'#7c3aed', accentTo:'#8b5cf6',
     tagBg:'rgba(46,16,101,.55)', tagColor:'#c4b5fd', tagBorder:'rgba(139,92,246,.35)',
+    readme: `
+      <h1>📊 TTO UAM Sosyal Medya ve Web Veri Dashboard'u</h1>
+      <p>Kırşehir Ahi Evran Üniversitesi TTO UAM'ın YouTube, Instagram, LinkedIn ve Kurumsal Web Sitesi verilerini otomatik toplayan, analiz eden ve görselleştiren gelişmiş bir Kurumsal Analitik Panel uygulamasıdır.</p>
+
+      <h2>🚀 Öne Çıkan Özellikler</h2>
+      <ul>
+        <li><strong>Zaman Periyodu Filtrelemesi:</strong> 3 Ay / 6 Ay / 1 Yıl butonlarıyla veriler anlık yeniden hesaplanır.</li>
+        <li><strong>Gelişmiş LinkedIn Entegrasyonu:</strong> Selenium ile LinkedIn gönderileri ve etkileşimleri otomatik toplanır.</li>
+        <li><strong>Dinamik Excel ve PDF Raporlama:</strong> Tek tıkla profesyonel Yönetici Özeti (PDF) ve KPI Veri Tablosu (Excel) üretilebilir.</li>
+        <li><strong>Glassmorphism Tasarım:</strong> Modern cam tasarımlı arayüz, dinamik pasta grafikler ve şampiyon içerikler listesi.</li>
+      </ul>
+
+      <h2>🛠️ Proje Bileşenleri</h2>
+      <ul>
+        <li><code>auto_updater.py</code> — Veri çekme işlemlerinin ana yönetim motoru (YouTube API, Playwright, scraper)</li>
+        <li><code>linkedin_scraper.py</code> — Akıllı kaydırma ile LinkedIn verilerini toplayan özel bot modülü</li>
+        <li><code>server.py</code> — Port 8080'de yerel HTTP/API sunucusu; güncelleme isteklerini yönetir</li>
+        <li><code>Analitik Paneli.bat</code> — Tek tıkla sunucuyu başlatır ve tarayıcıda dashboard'u açar</li>
+        <li><code>index.html / style.css / script.js</code> — Chart.js, ExcelJS ile geliştirilmiş modern frontend</li>
+      </ul>
+
+      <h2>⚙️ Kurulum</h2>
+      <pre><code>pip install playwright requests selenium
+playwright install chromium</code></pre>
+      <p>LinkedIn taramaları için <strong>Google Chrome</strong> kurulu olmalıdır.</p>
+
+      <h2>🖥️ Çalıştırma</h2>
+      <ul>
+        <li><strong>Başlatma:</strong> <code>Analitik Paneli.bat</code> dosyasına çift tıklayın. Konsol penceresini açık tutun.</li>
+        <li><strong>Güncelleme:</strong> Arayüzdeki <strong>"Güncelle"</strong> butonuyla tüm platformlar taranır ve arayüz yenilenir.</li>
+        <li><strong>Rapor:</strong> <strong>"PDF Çıktısı Al"</strong> ve <strong>"Excel İndir"</strong> butonlarıyla kurumsal raporlar oluşturulur.</li>
+      </ul>
+
+      <h2>📌 Önemli Notlar</h2>
+      <ul>
+        <li><strong>Instagram:</strong> İlk çalıştırmada tarayıcı açılır, 2 dakika içinde giriş yapın. Çerezler <code>ig_auth.json</code>'a kaydedilir.</li>
+        <li><strong>LinkedIn:</strong> <code>linkedin_chrome_profile</code> klasörüne izole profil oluşturulur. İlk çalıştırmada hesabınıza giriş yapın.</li>
+        <li>Tarih Algoritması: Türkçe ve İngilizce tarih ifadelerini (hafta, gün, ay, 1y vb.) ayırt eden özel Regex kullanılır.</li>
+      </ul>
+
+      <div class="badge-row">
+        <span class="tag">FastAPI</span><span class="tag">Playwright</span><span class="tag">Selenium</span><span class="tag">SQLite</span><span class="tag">Chart.js</span><span class="tag">REST API</span>
+      </div>
+    `,
   },
   {
     emoji:'📄',
@@ -481,6 +645,58 @@ const projects = [
     tags:['Python','Word/PDF','SMTP','SQLAlchemy','Şablon Motoru'],
     accentFrom:'#059669', accentTo:'#10b981',
     tagBg:'rgba(6,78,59,.45)', tagColor:'#6ee7b7', tagBorder:'rgba(16,185,129,.3)',
+    readme: `
+      <h1>📄 Otomatik Bildiri Mektubu Üretim ve E-posta Gönderim Sistemi</h1>
+      <p>Bu proje, akademik sempozyum veya konferanslar için yazarlara gönderilecek kabul mektuplarını otomatik olarak oluşturan ve bu mektupları yazarların e-posta adreslerine gönderen bir Python otomasyon sistemidir.</p>
+
+      <h2>✨ Özellikler</h2>
+      <ul>
+        <li><strong>Otomatik Excel Tarama:</strong> Klasöre eklenen <code>.xlsx</code> uzantılı yazar veri dosyalarını otomatik olarak okur (esnek kolon isimlendirmelerini destekler).</li>
+        <li><strong>Word ve PDF Üretimi:</strong> Belirlenen bir Word şablonuna yazar adı ve bildiri başlığı gibi bilgileri işler, ardından bunu PDF formatına dönüştürür.</li>
+        <li><strong>Toplu E-Posta Gönderimi:</strong> Üretilen PDF dosyalarını e-posta eki olarak yazarlara otomatik ve güvenli (SSL) bir şekilde iletir.</li>
+        <li><strong>Raporlama:</strong> Üretilen tüm mektupların ve e-posta gönderim durumlarının kaydını Excel formatında tutar.</li>
+        <li><strong>Ana Liste Güncellemesi:</strong> Yeni eklenen yazarları ana yazar listesine otomatik olarak ekler.</li>
+      </ul>
+
+      <h2>📁 Dosya ve Klasör Yapısı</h2>
+      <ul>
+        <li><code>main.py</code> — Projenin ana kaynak kodu ve otomasyon motoru</li>
+        <li><code>BASLAT.bat</code> — Sistemi hızlıca çalıştırmak için kısayol dosyası</li>
+        <li><code>2_KABUL_MEKTUBU_SABLON.docx</code> — Kabul mektupları şablonu</li>
+        <li><code>1_YAZAR_LISTESI.xlsx</code> — Tüm yazarların kaydedildiği ana liste</li>
+        <li><code>Oluşturulan_Mektuplar/</code> — Üretilen belgelerin saklandığı dizin</li>
+      </ul>
+
+      <h2>⚙️ Kurulum</h2>
+      <p>Word → PDF dönüşümü için bilgisayarınızda <strong>Microsoft Word</strong> kurulu olmalıdır.</p>
+      <pre><code>pip install pandas openpyxl python-docx pywin32</code></pre>
+
+      <h2>🚀 Kullanım</h2>
+      <h3>Yöntem 1 — Hızlı Başlatma</h3>
+      <p><code>BASLAT.bat</code> dosyasına çift tıklayarak etkileşimli menüyü açabilirsiniz.</p>
+      <h3>Yöntem 2 — Komut Satırı</h3>
+      <pre><code>python main.py --uret    # Sadece PDF üret
+python main.py --gonder  # E-postaları gönder
+python main.py --hepsi   # Tam otomatik
+python main.py           # Etkileşimli menü</code></pre>
+
+      <h2>🔄 İşleyiş Mantığı</h2>
+      <ul>
+        <li>Yazar bilgilerini içeren Excel dosyasını klasöre ekleyin.</li>
+        <li>Yazılım satırları okur, Word şablonuna doldurur ve PDF'e çevirir.</li>
+        <li>E-posta gönderimi başlatıldığında herkese otomatik mail atılır.</li>
+      </ul>
+
+      <h2>⚠️ Önemli Notlar</h2>
+      <ul>
+        <li><code>main.py</code> içindeki SMTP Ayarlarını kendi e-posta sağlayıcınıza göre güncelleyin.</li>
+        <li>Gmail kullanıyorsanız <strong>Uygulama Şifreleri (App Passwords)</strong> oluşturmanız gerekir.</li>
+      </ul>
+
+      <div class="badge-row">
+        <span class="tag">Python</span><span class="tag">Word/PDF</span><span class="tag">SMTP</span><span class="tag">SQLAlchemy</span><span class="tag">Şablon Motoru</span>
+      </div>
+    `,
   }
 ];
 
@@ -522,7 +738,7 @@ projects.forEach((p, i) => {
           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
           GitHub
         </a>
-        <a href="#" class="btn-p" style="flex:1;justify-content:center;padding:9px 12px;border-radius:11px;font-size:.78rem;">
+        <a href="#" class="btn-p readme-btn" data-index="${i}" style="flex:1;justify-content:center;padding:9px 12px;border-radius:11px;font-size:.78rem;">
           <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           Detay
         </a>
@@ -550,6 +766,27 @@ function tick(){
   setTimeout(tick, del?52:88);
 }
 setTimeout(tick, 600);
+
+/* ── README MODAL ───────────────────────── */
+/* ── README MODAL ─────────────────────── */
+document.getElementById('proj-grid').addEventListener('click', function(e) {
+  const btn = e.target.closest('.readme-btn');
+  if (!btn) return;
+  e.preventDefault();
+  const idx = parseInt(btn.dataset.index);
+  const project = projects[idx];
+  if (!project || !project.readme) return;
+  document.getElementById('readme-title').textContent = project.title;
+  document.getElementById('readme-body').innerHTML = project.readme;
+  document.getElementById('readme-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+function closeReadme(e, force) {
+  if (!force && e && e.target !== document.getElementById('readme-overlay')) return;
+  document.getElementById('readme-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReadme(null, true); });
 
 /* ── MOBILE MENU ────────────────────────── */
 let menuOpen = false;
